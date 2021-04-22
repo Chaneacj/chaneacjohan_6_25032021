@@ -1,5 +1,3 @@
-# Pekocko 
-
 ## Installation
 
 ### frontend
