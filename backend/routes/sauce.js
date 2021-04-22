@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+// Middleware - Permet d'authentifier les pages de l'application 
 const auth = require('../middleware/auth');
+// Middleware - Définit la destination et le nom des fichiers des images 
 const multer = require('../middleware/multer-config');
 
 const sauceCtrl = require('../controllers/sauce');

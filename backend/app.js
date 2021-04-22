@@ -1,4 +1,4 @@
-//importe express
+// Importation express
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -6,19 +6,22 @@ const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 
+// Importation des routes
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
 require('dotenv').config();
 const user = process.env.DB_USER;
 const password = process.env.DB_PASS;
-//appeller la méthode express
+
+// Appeller la méthode express
 const app = express();
 
 app.use(mongoSanitize());
+// Helmet protection des headers
 app.use(helmet());
 
-//Connexion à la base de donnée
+// Connexion à la base de donnée
 mongoose.connect(`mongodb+srv://${user}:${password}@cluster0.qqt5a.mongodb.net/projet6?retryWrites=true&w=majority`,
     { useNewUrlParser: true,
      useUnifiedTopology: true,
