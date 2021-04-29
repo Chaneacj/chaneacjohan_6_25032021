@@ -39,7 +39,8 @@ app.use((req, res, next) => {
 });
 
 //Rend les données du corps de la requête exploitable
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(express.json());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

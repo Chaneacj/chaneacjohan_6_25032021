@@ -1,27 +1,46 @@
 const bcrypt = require('bcrypt'); // Chiffrement
 const jwt = require('jsonwebtoken'); // Token 
 const MaskData = require('maskdata'); // Masquage des données utilisateur
+const passwordValidator = require('password-validator'); 
 
 const User = require('../models/user'); // Model user
 
+let schema = new passwordValidator();
+schema
+.is().min(8)                                  // min 8 caractères
+.is().max(30)                                 // max 30 caractères
+.has().uppercase()                            // Must have uppercase letters
+.has().lowercase()                            // Avec minuscule
+.has().digits()                               // Avec majuscule
+.has().not().symbols()                        // pas de symbole   
+.has().not().spaces();                        // pas d'espace  
+
+
+
 // Inscription
 exports.signup = (req, res, next) => {
+  console.log(schema.validate(req.body.password));
+  if(!schema.validate(req.body.password)) {
+    let error = 'Attention le mot de passe n est pas valide'
+    res.status(400).json({ error })
+  }else {
   // Masquage de l'email
   const maskedMail = MaskData.maskEmail2(req.body.email);
   //Cryptage du MDP
-  bcrypt.hash(req.body.password, 10)
-    .then(hash => {
-      const user = new User({
-        email: maskedMail,
-        password: hash
-      });
-      // Sauvegarde de l'utilisateur dans la BDD
-      user.save()
-        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-        .catch(error => res.status(400).json({ error }));
-    })
-    .catch(error => res.status(500).json({ error }));
-};
+    bcrypt.hash(req.body.password, 10)
+      .then(hash => {
+        const user = new User({
+          email: maskedMail,
+          password: hash
+        });       
+        user.save()
+          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+          .catch(error => res.status(400).json({ error }));
+      })
+      .catch(error => res.status(500).json({ error }));
+    } 
+  };
+
 
 // Connexion
 exports.login = (req, res, next) => {
@@ -43,7 +62,7 @@ exports.login = (req, res, next) => {
             userId: user._id,
             token: jwt.sign(
               { userId: user._id },
-              'RANDOM_TOKEN_SECRET',
+              process.env.TOKEN,
               { expiresIn: '24h' }
             )
           });

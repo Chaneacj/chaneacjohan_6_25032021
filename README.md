@@ -24,3 +24,5 @@ Démarrer le serveur
 ```
 nodemon server
 ```
+
+Modifier le .env.exemple pour connecter la base de donnée
